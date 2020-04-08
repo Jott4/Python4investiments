@@ -5,14 +5,11 @@ from datetime import datetime
 from time import mktime
 import matplotlib.pyplot as plt
 from matplotlib import style
+
 plt.style.use('bmh')
 import re
-import urllib
 
 path = r"C:\Users\jvgcu\Olimpiadas\investing\intraQuarter"
-
-
-
 
 def Key_Stats(gather=["Total Debt/Equity",
                       'Trailing P/E',
@@ -24,93 +21,93 @@ def Key_Stats(gather=["Total Debt/Equity",
                       'Return on Equity',
                       'Revenue Per Share',
                       'Market Cap',
-                        'Enterprise Value',
-                        'Forward P/E',
-                        'PEG Ratio',
-                        'Enterprise Value/Revenue',
-                        'Enterprise Value/EBITDA',
-                        'Revenue',
-                        'Gross Profit',
-                        'EBITDA',
-                        'Net Income Avl to Common ',
-                        'Diluted EPS',
-                        'Earnings Growth',
-                        'Revenue Growth',
-                        'Total Cash',
-                        'Total Cash Per Share',
-                        'Total Debt',
-                        'Current Ratio',
-                        'Book Value Per Share',
-                        'Cash Flow',
-                        'Beta',
-                        'Held by Insiders',
-                        'Held by Institutions',
-                        'Shares Short (as of',
-                        'Short Ratio',
-                        'Short % of Float',
-                        'Shares Short (prior ']):
-
-    statspath = path+'/_KeyStats'
+                      'Enterprise Value',
+                      'Forward P/E',
+                      'PEG Ratio',
+                      'Enterprise Value/Revenue',
+                      'Enterprise Value/EBITDA',
+                      'Revenue',
+                      'Gross Profit',
+                      'EBITDA',
+                      'Net Income Avl to Common ',
+                      'Diluted EPS',
+                      'Earnings Growth',
+                      'Revenue Growth',
+                      'Total Cash',
+                      'Total Cash Per Share',
+                      'Total Debt',
+                      'Current Ratio',
+                      'Book Value Per Share',
+                      'Cash Flow',
+                      'Beta',
+                      'Held by Insiders',
+                      'Held by Institutions',
+                      'Shares Short (as of',
+                      'Short Ratio',
+                      'Short % of Float',
+                      'Shares Short (prior ']):
+    statspath = path + '/_KeyStats'
     stock_list = [x[0] for x in os.walk(statspath)]
 
-    df = pd.DataFrame(columns = ['Date',
-                                 'Unix',
-                                 'Ticker',
-                                 'Price',
-                                 'stock_p_change',
-                                 'SP500',
-                                 'sp500_p_change',
-                                 'Difference',
-                                 ##############
-                                 'DE Ratio',
-                                 'Trailing P/E',
-                                 'Price/Sales',
-                                 'Price/Book',
-                                 'Profit Margin',
-                                 'Operating Margin',
-                                 'Return on Assets',
-                                 'Return on Equity',
-                                 'Revenue Per Share',
-                                 'Market Cap',
-                                 'Enterprise Value',
-                                 'Forward P/E',
-                                 'PEG Ratio',
-                                 'Enterprise Value/Revenue',
-                                 'Enterprise Value/EBITDA',
-                                 'Revenue',
-                                 'Gross Profit',
-                                 'EBITDA',
-                                 'Net Income Avl to Common ',
-                                 'Diluted EPS',
-                                 'Earnings Growth',
-                                 'Revenue Growth',
-                                 'Total Cash',
-                                 'Total Cash Per Share',
-                                 'Total Debt',
-                                 'Current Ratio',
-                                 'Book Value Per Share',
-                                 'Cash Flow',
-                                 'Beta',
-                                 'Held by Insiders',
-                                 'Held by Institutions',
-                                 'Shares Short (as of',
-                                 'Short Ratio',
-                                 'Short % of Float',
-                                 'Shares Short (prior ',
-                                 ##############
-                                 'Status'])
+    df = pd.DataFrame(columns=['Date',
+                               'Unix',
+                               'Ticker',
+                               'Price',
+                               'stock_p_change',
+                               'SP500',
+                               'sp500_p_change',
+                               'Difference',
+                               ##############
+                               'DE Ratio',
+                               'Trailing P/E',
+                               'Price/Sales',
+                               'Price/Book',
+                               'Profit Margin',
+                               'Operating Margin',
+                               'Return on Assets',
+                               'Return on Equity',
+                               'Revenue Per Share',
+                               'Market Cap',
+                               'Enterprise Value',
+                               'Forward P/E',
+                               'PEG Ratio',
+                               'Enterprise Value/Revenue',
+                               'Enterprise Value/EBITDA',
+                               'Revenue',
+                               'Gross Profit',
+                               'EBITDA',
+                               'Net Income Avl to Common ',
+                               'Diluted EPS',
+                               'Earnings Growth',
+                               'Revenue Growth',
+                               'Total Cash',
+                               'Total Cash Per Share',
+                               'Total Debt',
+                               'Current Ratio',
+                               'Book Value Per Share',
+                               'Cash Flow',
+                               'Beta',
+                               'Held by Insiders',
+                               'Held by Institutions',
+                               'Shares Short (as of',
+                               'Short Ratio',
+                               'Short % of Float',
+                               'Shares Short (prior ',
+                               ##############
+                               'Status'])
 
     ticker_list = []
 
     sp500_df = pd.read_csv('YAHOO-INDEX_GSPC.csv')
+    stock_df = pd.read_csv('stock_prices.csv')
 
     for each_dir in stock_list[1:]:
         each_file = os.listdir(each_dir)
         ticker = each_dir.split("\\")[-1]
         ticker_list.append(ticker)
 
-        starting_stock_value = False
-        starting_sp500_value = False
+        # starting_stock_value = False
+        # starting_sp500_value = False
 
         if len(each_file) > 0:
             for file in each_file:
@@ -123,18 +120,17 @@ def Key_Stats(gather=["Total Debt/Equity",
 
                     for each_data in gather:
                         try:
-                            regex = re.escape(each_data) + r'.*?(\d{1,8}\.\d{1,8}M?B?|N/A)%?</td>'
+                            regex = re.escape(each_data) + r'.*?(\d{1,8}\.\d{1,8}M?B?|N/A)%?'
                             value = re.search(regex, source)
                             value = (value.group(1))
 
                             if "B" in value:
-                                value = float(value.replace("B", ''))*1000000000
+                                value = float(value.replace("B", '')) * 1000000000
 
                             elif "M" in value:
-                                value = float(value.replace("M", ''))*1000000
+                                value = float(value.replace("M", '')) * 1000000
 
                             value_list.append(value)
-
 
 
                         except Exception as e:
@@ -144,52 +140,66 @@ def Key_Stats(gather=["Total Debt/Equity",
                         sp500_date = datetime.fromtimestamp(unix_time).strftime('%Y-%m-%d')
                         row = sp500_df[sp500_df["Date"] == sp500_date]
                         sp500_value = float(row["Adj Close"])
+                        sp500_value = round((sp500_value), 2)
                     except:
-                        sp500_date = datetime.fromtimestamp(unix_time - 259200).strftime('%Y-%m-%d')
-                        row = sp500_df[sp500_df["Date"] == sp500_date]
-                        sp500_value = float(row["Adj Close"])
-                    try:
-                        stock_price = float(source.split('</small><big><b>')[1].split('</b></big>')[0])
-                    except:
-                        #       <span id="yfs_l10_afl">43.27</span>
                         try:
-                            stock_price = (source.split('</small><big><b>')[1].split('</b></big>')[0])
-                            stock_price = re.search(r'(\d{1,8}\.\d{1,8})', stock_price)
-                            stock_price = float(stock_price.group(1))
-
-                            #print(stock_price)
-                            #time.sleep(15)
+                            sp500_date = datetime.fromtimestamp(unix_time - 259200).strftime('%Y-%m-%d')
+                            row = sp500_df[sp500_df["Date"] == sp500_date]
+                            sp500_value = float(row["Adj Close"])
                         except Exception as e:
-                            try:
-                                stock_price = (source.split('<span class="time_rtq_ticker">')[1].split('</span>')[0])
-                                stock_price = re.search(r'(\d{1,8}\.\d{1,8})', stock_price)
-                                stock_price = float(stock_price.group(1))
-                            except:
-                                print('wtf stock price lol', ticker, file, value)
-                            #print('latest', stock_price)
+                            print("fapsdolkfhasf;lsak", str(e))
 
-                            #print('stock price',str(e),ticker,file)
-                            #time.sleep(15)
+                    one_year_later = int(unix_time + 31536000)
 
-                    #print("stock_price:", stock_price, "ticker:", ticker)
+                    try:
+                        sp500_1y = datetime.fromtimestamp(one_year_later).strftime('%Y-%m-%d')
+                        row = sp500_df[sp500_df["Date"] == sp500_1y]
+                        sp500_1y_value = float(row["Adj Close"])
+                    except:
+                        try:
+                            sp500_1y = datetime.fromtimestamp(one_year_later - 259200).strftime('%Y-%m-%d')
+                            row = sp500_df[sp500_df["Date"] == sp500_1y]
+                            sp500_1y_value = float(row["Adj Close"])
+                        except Exception as e:
+                            print('SP 500 1 year later issue', str(e))
 
-                    if not starting_stock_value:
-                        starting_stock_value = stock_price
-                    if not starting_sp500_value:
-                        starting_sp500_value = sp500_value
+                    try:
+                        stock_price_1y = datetime.fromtimestamp(one_year_later).strftime('%Y-%m-%d')
+                        row = stock_df[stock_df["Date"] == stock_price_1y][ticker.upper()]
+                        stock_1y_value = round()
 
-                    stock_p_change = ((stock_price - starting_stock_value) / starting_stock_value) * 100
-                    sp500_p_change = ((sp500_value - starting_sp500_value) / starting_sp500_value) * 100
 
-                    location = len(df['Date'])
+                    except Exception as e:
+                        try:
+                            stock_price_1y = datetime.fromtimestamp(one_year_later - 259200).strftime('%Y-%m-%d')
+                            row = stock_df[stock_df["Date"] == stock_price_1y][ticker.upper()]
+                            stock_1y_value = round(float(row),2)
+                        except Exception as e:
+                            print('Stock price exception', str(e))
+
+                    try:
+                        stock_price = datetime.fromtimestamp(unix_time).strftime('%Y-%m-%d')
+                        row = stock_df[stock_df["Date"] == stock_price][ticker.upper()]
+                        stock_price = round(float(row), 2)
+
+
+                    except Exception as e:
+                        try:
+                            stock_price = datetime.fromtimestamp(unix_time - 259200).strftime('%Y-%m-%d')
+                            row = stock_df[stock_df["Date"] == stock_price][ticker.upper()]
+                            stock_price = round(float(row), 2)
+                        except Exception as e:
+                            print('Stock price exception', str(e))
+
+                    stock_p_change = round((((stock_1y_value - stock_price) / stock_price) * 100), 2)
+                    sp500_p_change = round((((sp500_1y_value - sp500_value) / sp500_value) * 100), 2)
 
                     difference = stock_p_change - sp500_p_change
 
-                    if difference > 0:
+                    if difference > 15:
                         status = 'outperform'
                     else:
                         status = 'underperform'
-
 
                     if value_list.count("N/A") > 0:
                         pass
@@ -249,6 +259,7 @@ def Key_Stats(gather=["Total Debt/Equity",
                 except Exception as e:
                     pass
 
-    df.to_csv('key_stats.csv')
+    df.to_csv('key_stats_acc_perf_NO_NA.csv')
+
 
 Key_Stats()

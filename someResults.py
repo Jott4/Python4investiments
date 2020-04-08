@@ -43,10 +43,11 @@ FEATURES =  ['DE Ratio',
              'Shares Short (prior ']
 
 def Build_Data_Set():
-    data_df = pd.read_csv("key_stats.csv")
+    data_df = pd.read_csv("key_stats_acc_perf_NO_NA.csv")
 
    # data_df = data_df[:100]
-
+    data_df = data_df.reindex(np.random.permutation(data_df.index))
+    data_df.fillna(0)
     X = np.array(data_df[FEATURES].values)
 
     y = (data_df["Status"]
@@ -74,9 +75,5 @@ def Analysis():
             correct_count += 1
 
     print("Accuracy:", (correct_count / test_size) * 100.00)
-
-
-Analysis()
-
 
 Analysis()
