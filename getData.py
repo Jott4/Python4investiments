@@ -4,8 +4,8 @@ import time
 
 import quandl
 
-quandl.ApiConfig.api_key = "AxZyaB8h_jcK1RruvNeo"
-path = r"C:\Users\jvgcu\Olimpiadas\investing\intraQuarter"
+quandl.ApiConfig.api_key = "KNMsE79xmVujz6W5CHub"
+path = r"C:\Users\jvgcu\Desktop\Python4Investiments\intraQuarter"
 
 def Stock_Prices():
     df = pd.DataFrame()
