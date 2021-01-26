@@ -1,4 +1,4 @@
-# A study of machine lerning for investments IN S&P500 with python based on a tutorial from [Sentdex](https://www.youtube.com/user/sentdex)
+# A study of machine lerning for investments in S&P500 with python based on a tutorial from [Sentdex](https://www.youtube.com/user/sentdex)
 
 ## Installation
 
